@@ -12,8 +12,7 @@ screen = pygame.display.set_mode((screenwidth, screenheight),0,32)
 #setting font settings
 font = pygame.font.SysFont(None, 30)
 
-
-#A function that can be used to write text on our screen and buttons
+#function that can be used to write text on screen and buttons
 def draw_text(text, font, color, surface, x, y, centered=False):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
@@ -33,28 +32,28 @@ def main_menu():
     while True:
 
         screen.fill((0,190,255))
-        draw_text("DriveRightUK", font, (0,0,0), screen, (screenwidth//2), 50, centered=True)
+        draw_text("DriveRightUK", font, (0,0,0), screen, (screenwidth//2), 50, centered=True) # 
 
         mx, my = pygame.mouse.get_pos()
 
         #creating buttons
-        button_1 = pygame.Rect(10, 350, 200, 40)
-        button_2 = pygame.Rect(10, 300, 200, 40)
-        button_3 = pygame.Rect(670, 80, 40, 40)
+        playButton = pygame.Rect(10, 350, 200, 40) # "play" button
+        optionsButton = pygame.Rect(10, 300, 200, 40) # "options" button
+        settingsButton = pygame.Rect(670, 80, 40, 40) # settings button
 
         #defining functions when a certain button is pressed
-        if button_1.collidepoint((mx, my)):
+        if playButton.collidepoint((mx, my)):
             if click:
                 game()
-        if button_2.collidepoint((mx, my)):
+        if optionsButton.collidepoint((mx, my)):
             if click:
                 options()
-        if button_3.collidepoint((mx, my)):
+        if settingsButton.collidepoint((mx, my)):
             if click:
                 settings()
-        pygame.draw.rect(screen, (255, 0, 0), button_1, 0, 3)
-        pygame.draw.rect(screen, (255, 0, 0), button_2, 0, 3)
-        pygame.draw.rect(screen, (128, 128, 128), button_3, 0, 100)
+        pygame.draw.rect(screen, (255, 0, 0), playButton, 0, 3)
+        pygame.draw.rect(screen, (255, 0, 0), optionsButton, 0, 3)
+        pygame.draw.rect(screen, (128, 128, 128), settingsButton, 0, 100)
 
         #writing text on top of button
         draw_text('PLAY', font, (255,255,255), screen, 20, 360)
@@ -113,7 +112,7 @@ def options():
         pygame.display.update()
         mainClock.tick(60)
 
-# This function is called when the "SETTINGS" button is clicked.
+# This function is called when the "SETTINGS" button is clicked
 def settings():
     running = True
     while running:
