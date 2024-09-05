@@ -10,11 +10,15 @@ screenwidth = 720
 screenheight = 405
 screen = pygame.display.set_mode((screenwidth, screenheight), 0, 32)
 
-# background image
-background_image = pygame.image.load('background.jfif')
+# Load background image
+background_image = pygame.image.load('background.jpg')
 background_image = pygame.transform.scale(background_image, (screenwidth, screenheight))
 
-#cog image
+# Load logo image
+logo_image = pygame.image.load('simlogo.png')
+logo_image = pygame.transform.scale(logo_image, (400, 80))
+
+# Load cog image
 cog_image = pygame.image.load('cog.png')
 cog_image = pygame.transform.scale(cog_image, (30,30))
 
@@ -121,8 +125,7 @@ def main_menu():
     while True:
         screen.blit(background_image, (0,0))
 
-        title_text = Text("DriveRightUK", font, (0, 0, 0), screen)
-        title_text.draw(screenwidth // 2, 50, centered=True)
+        screen.blit(logo_image, ((screenwidth/2 - 200), 20))
 
         play_button.draw()
         options_button.draw()
