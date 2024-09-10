@@ -35,9 +35,9 @@ class Text:
         self.text_surface = self.font.render(self.text, True, self.color)
         self.text_rect = self.text_surface.get_rect()
 
-    def draw(self, x, y, centered=False):
-        if centered:
-            self.text_rect.center = (x, y)
+    def draw(self, x, y):
+        if x=="centered":
+            self.text_rect.center = ((screenwidth // 2), y)
         else:
             self.text_rect.topleft = (x, y)
         self.surface.blit(self.text_surface, self.text_rect)
@@ -70,7 +70,7 @@ class Button:
             pygame.draw.rect(self.surface, current_color, self.rect, border_radius=3)
 
         # Draw the text in the center of the button
-        self.text.draw(self.rect.centerx, self.rect.centery, centered=True)
+        self.text.draw("centered", self.rect.centery)
 
         # Draw the image (if set) in the center of the button
         if self.image:
@@ -214,7 +214,7 @@ def settings():
 
         # Show buttons, underlay on screen
         underlay.draw()
-        settings_text.draw(screenwidth // 2, 50, centered=True)
+        settings_text.draw("centered", 50)
         howtoplay_button.draw()
         mute_button.draw()
         credits_button.draw()
@@ -240,10 +240,28 @@ def settings():
         pygame.display.update()
         mainClock.tick(60)
 
+# This function is called when the "Credits" button on the settings page is clicked
 def credits():
     running = True
     while running:
-        screen.blit(background_image, (0, 0))
+        screen.blit(background_image, (0,0)) # sets the background image
+
+        # Settings menu title text
+        page_title = Text("Credits", font, (0, 0, 0), screen)
+        
+        # Main content text
+        line1 = Text("Created by", font, (0, 0, 0), screen)
+        line2 = Text("Loran", font, (0, 0, 0), screen)
+
+        # Create underlay design
+        underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+        underlay.draw()
+        page_title.draw("centered", 50)
+        line1.draw(screenwidth / 2 - 10, 70)
+
+        pygame.display.update()
+        mainClock.tick(60)
 
 
 def howToPlay():
