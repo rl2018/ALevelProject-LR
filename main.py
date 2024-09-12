@@ -35,7 +35,9 @@ class Text:
         self.text_surface = self.font.render(self.text, True, self.color)
         self.text_rect = self.text_surface.get_rect()
 
-    def draw(self, x, y):
+    def draw(self, x, y, button=False):
+        if button:
+            self.text_rect.center = (x, y)
         if x=="centered":
             self.text_rect.center = ((screenwidth // 2), y)
         else:
@@ -70,7 +72,7 @@ class Button:
             pygame.draw.rect(self.surface, current_color, self.rect, border_radius=3)
 
         # Draw the text in the center of the button
-        self.text.draw("centered", self.rect.centery)
+        self.text.draw(self.rect.centerx, self.rect.centery, button=True)
 
         # Draw the image (if set) in the center of the button
         if self.image:
