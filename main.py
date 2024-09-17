@@ -27,19 +27,19 @@ font = pygame.font.SysFont(None, 30)
 
 # Class used to write text on screen
 class Text:
-    def __init__(self, text, font, color, surface):
+    def __init__(self, text, font_name, font_size, color, surface):
         self.text = text
-        self.font = font
+        self.font_name = font_name
+        self.font_size = font_size
         self.color = color
         self.surface = surface
-        self.text_surface = self.font.render(self.text, True, self.color)
+        self.font = pygame.font.Font(pygame.font.match_font(self.font_name), self.font_size) # Create font object with the chosen font name and size
+        self.text_surface = self.font.render(self.text, True, self.color) # Render the text with the specified font and color
         self.text_rect = self.text_surface.get_rect()
 
-    def draw(self, x, y, button=False):
-        if button:
+    def draw(self, x, y, centered=False):
+        if centered:
             self.text_rect.center = (x, y)
-        if x=="centered":
-            self.text_rect.center = ((screenwidth // 2), y)
         else:
             self.text_rect.topleft = (x, y)
         self.surface.blit(self.text_surface, self.text_rect)
@@ -50,6 +50,7 @@ class Button:
     def __init__(self, x, y, width, height, color, hover_color, border_color, border_width, text, font, text_color, surface, image=None):
         if x == "center":  # If the value of the x parameter is "center"
             x = (screenwidth // 2) - (width // 2)  # Center the element horizontally
+        self.width = width
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.hover_color = hover_color
@@ -72,7 +73,7 @@ class Button:
             pygame.draw.rect(self.surface, current_color, self.rect, border_radius=3)
 
         # Draw the text in the center of the button
-        self.text.draw(self.rect.centerx, self.rect.centery, button=True)
+        self.text.draw(self.rect.centerx, self.rect.centery, centered=True)
 
         # Draw the image (if set) in the center of the button
         if self.image:
@@ -183,7 +184,7 @@ def options():
         screen.fill((0, 0, 0))
 
         options_text = Text('OPTIONS SCREEN', font, (255, 255, 255), screen)
-        options_text.draw(20, 20)
+        options_text.draw(20, 20,centered=True)
         
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -216,7 +217,7 @@ def settings():
 
         # Show buttons, underlay on screen
         underlay.draw()
-        settings_text.draw("centered", 50)
+        settings_text.draw(screenwidth // 2, 50, centered=True)
         howtoplay_button.draw()
         mute_button.draw()
         credits_button.draw()
@@ -254,13 +255,36 @@ def credits():
         # Main content text
         line1 = Text("Created by", font, (0, 0, 0), screen)
         line2 = Text("Loran", font, (0, 0, 0), screen)
+        line3 = Text("With thanks to", font, (0,0,0), screen)
+        line4 = Text("Ms Lassami", font, (0,0,0), screen)
+        line5 = Text("for teaching me", font, (0,0,0), screen)
+        line6 = Text("And an honourable mention to", font, (0,0,0), screen)
+        line7 = Text("Mr Lau", font, (0,0,0), screen)
+        line8 = Text("the legend of computer science", font, (0,0,0), screen)
 
         # Create underlay design
         underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
 
+        textline_xpos = screenwidth / 2 - 140
+
         underlay.draw()
-        page_title.draw("centered", 50)
-        line1.draw(screenwidth / 2 - 10, 70)
+        page_title.draw(screenwidth//2, 50, True)
+        line1.draw(textline_xpos, 70)
+        line2.draw(textline_xpos, 100)
+        line3.draw(textline_xpos, 160)
+        line4.draw(textline_xpos, 190)
+        line5.draw(textline_xpos, 210)
+        line6.draw(textline_xpos, 260)
+        line7.draw(textline_xpos, 290)
+        line8.draw(textline_xpos, 310)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
 
         pygame.display.update()
         mainClock.tick(60)
