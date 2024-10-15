@@ -23,18 +23,22 @@ cog_image = pygame.image.load('cog.png')
 cog_image = pygame.transform.scale(cog_image, (30,30))
 
 # Setting font settings
-font = pygame.font.SysFont(None, 30)
+font = pygame.font.SysFont(None, 30) # default font
+font_50 = pygame.font.SysFont(None, 50)
+font_40 = pygame.font.SysFont(None, 40)
+font_30 = pygame.font.SysFont(None, 30)
+font_25 = pygame.font.SysFont(None, 25)
+font_20 = pygame.font.SysFont(None, 20)
+font_10 = pygame.font.SysFont(None, 10)
 
 # Class used to write text on screen
 class Text:
-    def __init__(self, text, font_name, font_size, color, surface):
+    def __init__(self, text, font, color, surface):
         self.text = text
-        self.font_name = font_name
-        self.font_size = font_size
+        self.font = font
         self.color = color
         self.surface = surface
-        self.font = pygame.font.Font(pygame.font.match_font(self.font_name), self.font_size) # Create font object with the chosen font name and size
-        self.text_surface = self.font.render(self.text, True, self.color) # Render the text with the specified font and color
+        self.text_surface = self.font.render(self.text, True, self.color)
         self.text_rect = self.text_surface.get_rect()
 
     def draw(self, x, y, centered=False):
@@ -121,8 +125,8 @@ click = False
 # Main container function that holds the buttons and game functions
 def main_menu():
     global click
-    play_button = Button(10, 350, 200, 40, (255, 0, 0), (200, 0, 0), (198, 0, 0), 2, "PLAY", font, (255, 255, 255), screen)
-    options_button = Button(10, 300, 200, 40, (255, 0, 0), (200, 0, 0), (198, 0, 0), 2, "OPTIONS", font, (255, 255, 255), screen)
+    newsave_button = Button(10, 350, 200, 40,  (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "New Save", font, (255, 255, 255), screen)
+    loadsave_button = Button(10, 300, 200, 40,  (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Load Save", font, (255, 255, 255), screen)
     settings_button = Button(670, 80, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
 
     while True:
@@ -130,14 +134,14 @@ def main_menu():
 
         screen.blit(logo_image, ((screenwidth/2 - 200), 20))
 
-        play_button.draw()
-        options_button.draw()
+        newsave_button.draw()
+        loadsave_button.draw()
         settings_button.draw()
 
-        if play_button.is_clicked():
-            game()
-        if options_button.is_clicked():
-            options()
+        if newsave_button.is_clicked():
+            newSave()
+        if loadsave_button.is_clicked():
+            loadSave()
         if settings_button.is_clicked():
             settings()
 
@@ -178,13 +182,17 @@ def game():
         mainClock.tick(60)
 
 # This function is called when the "OPTIONS" button is clicked.
-def options():
+def newSave():
     running = True
     while running:
-        screen.fill((0, 0, 0))
+        screen.blit(background_image, (0,0))
 
-        options_text = Text('OPTIONS SCREEN', font, (255, 255, 255), screen)
-        options_text.draw(20, 20,centered=True)
+        underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+        newsave_text = Text("New Save", font_50, (0, 0, 0), screen)
+
+        underlay.draw()
+        newsave_text.draw(screenwidth // 2, 50, centered=True)
         
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -204,7 +212,7 @@ def settings():
         screen.blit(background_image, (0,0)) # sets the background image
 
         # Settings menu title text
-        settings_text = Text("Settings", font, (0, 0, 0), screen)
+        settings_text = Text("Settings", font_50, (0, 0, 0), screen)
 
         # Create underlay design
         underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
@@ -249,18 +257,18 @@ def credits():
     while running:
         screen.blit(background_image, (0,0)) # sets the background image
 
-        # Settings menu title text
-        page_title = Text("Credits", font, (0, 0, 0), screen)
+        # Credits menu title text
+        page_title = Text("Credits", font_50, (0, 0, 0), screen)
         
         # Main content text
-        line1 = Text("Created by", font, (0, 0, 0), screen)
-        line2 = Text("Loran", font, (0, 0, 0), screen)
-        line3 = Text("With thanks to", font, (0,0,0), screen)
-        line4 = Text("Ms Lassami", font, (0,0,0), screen)
-        line5 = Text("for teaching me", font, (0,0,0), screen)
-        line6 = Text("And an honourable mention to", font, (0,0,0), screen)
-        line7 = Text("Mr Lau", font, (0,0,0), screen)
-        line8 = Text("the legend of computer science", font, (0,0,0), screen)
+        line1 = Text("Created by", font_25, (0, 0, 0), screen)
+        line2 = Text("Loran", font_40, (0, 0, 0), screen)
+        line3 = Text("With thanks to", font_25, (0,0,0), screen)
+        line4 = Text("Ms Lassami", font_40, (0,0,0), screen)
+        line5 = Text("for teaching me", font_20, (0,0,0), screen)
+        line6 = Text("And an honourable mention to", font_25, (0,0,0), screen)
+        line7 = Text("Mr Lau", font_40, (0,0,0), screen)
+        line8 = Text("the legend of computer science", font_20, (0,0,0), screen)
 
         # Create underlay design
         underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
@@ -269,14 +277,14 @@ def credits():
 
         underlay.draw()
         page_title.draw(screenwidth//2, 50, True)
-        line1.draw(textline_xpos, 70)
-        line2.draw(textline_xpos, 100)
-        line3.draw(textline_xpos, 160)
+        line1.draw(textline_xpos, 90)
+        line2.draw(textline_xpos, 110)
+        line3.draw(textline_xpos, 170)
         line4.draw(textline_xpos, 190)
-        line5.draw(textline_xpos, 210)
-        line6.draw(textline_xpos, 260)
+        line5.draw(textline_xpos, 220)
+        line6.draw(textline_xpos, 270)
         line7.draw(textline_xpos, 290)
-        line8.draw(textline_xpos, 310)
+        line8.draw(textline_xpos, 320)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -292,7 +300,57 @@ def credits():
 
 def howToPlay():
     running = True
+    while running:
+        screen.blit(background_image, (0,0)) # sets the background image
 
+        # How to play menu title text
+        page_title = Text("How to Play", font_50, (0, 0, 0), screen)
+
+        # Create underlay design
+        underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+        key_w = Button(220, 100, 50, 50, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, "W", font, (255, 255, 255), screen)
+        text_w = Text("Accelerate the vehicle", font_30, (0, 0, 0), screen)
+
+        key_s = Button(220, 160, 50, 50, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, "S", font, (255, 255, 255), screen)
+        text_s = Text("Decelerate the vehicle", font_30, (0, 0, 0), screen)
+
+        key_a = Button(220, 220, 50, 50, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, "A", font, (255, 255, 255), screen)
+        text_a = Text("Steer the vehicle left", font_30, (0, 0, 0), screen)
+
+        key_d = Button(220, 280, 50, 50, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, "D", font, (255, 255, 255), screen)
+        text_d = Text("Steer the vehicle right", font_30, (0, 0, 0), screen)
+
+        key_spacebar = Button(220, 340, 100, 50, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, "Spacebar", font, (255, 255, 255), screen)
+        text_spacebar = Text("Handbrake", font_30, (0, 0, 0), screen)
+
+
+
+        underlay.draw()
+        
+        key_w.draw()
+        text_w.draw(280, 112.5)
+        key_s.draw()
+        text_s.draw(280, 172.5)
+        key_a.draw()
+        text_a.draw(280, 232.5)
+        key_d.draw()
+        text_d.draw(280, 292.5)
+        key_spacebar.draw()
+        text_spacebar.draw(340, 352.5)
+
+        page_title.draw(screenwidth//2, 50, True)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+        
+        pygame.display.update()
+        mainClock.tick(60)
 
 def muteSound():
     running = True
