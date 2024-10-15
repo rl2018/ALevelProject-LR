@@ -181,9 +181,12 @@ def game():
         pygame.display.update()
         mainClock.tick(60)
 
-# This function is called when the "OPTIONS" button is clicked.
+# called when the "New Save" button is clicked
 def newSave():
     running = True
+    savefile = open ("savefile.txt", "w") # creates the file 'savefile.txt' in write mode
+    savefile.write("1") # first level
+    savefile.close()
     while running:
         screen.blit(background_image, (0,0))
 
@@ -191,9 +194,20 @@ def newSave():
 
         newsave_text = Text("New Save", font_50, (0, 0, 0), screen)
 
+        newsave_success1 = Text("New save file has been", font_30, (0, 0, 0), screen)
+        newsave_success2 = Text("successfully created", font_30, (0, 0, 0), screen)
+
+        levelselection = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen)
+
         underlay.draw()
         newsave_text.draw(screenwidth // 2, 50, centered=True)
+        newsave_success1.draw(screenwidth // 2, 170, centered=True)
+        newsave_success2.draw(screenwidth // 2, 190, centered=True)
+        levelselection.draw()
         
+        if levelselection.is_clicked():
+            selectionMenu()
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -357,6 +371,44 @@ def muteSound():
 
 def quitLevel():
     running = True
+
+
+def selectionMenu():
+    running = True
+    while running:
+        screen.blit(background_image, (0,0))
+
+        underlay = Background("center", 13, 700, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+        levelselection_text = Text("Level Selection", font_50, (0, 0, 0), screen)
+
+        level0_img = Button(35, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+        level0_text = Text("Tutorial level", font_20, (0, 0, 0), screen)
+
+        level1_img = Button(205, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+        level2_img = Button(375, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+        level3_img = Button(545, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+
+        underlay.draw()
+        levelselection_text.draw(160, 50, centered=True)
+
+        level0_img.draw()
+        level0_text.draw(35, 165)
+
+        level1_img.draw()
+        level2_img.draw()
+        level3_img.draw()
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+
+        pygame.display.update()
+        mainClock.tick(60)
 
 
 main_menu()
