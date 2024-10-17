@@ -190,31 +190,35 @@ def loadSave():
     file_path=os.path.join(current_directory, filename) # set the full path to the file
     
     # check if the file exists
-    if os.path.exists(file_path):
-        loadsave_success = True
-        loadsave_message = Text("Save file successfully retrieved!", font_30, (0, 0, 0), screen)
+    if os.path.exists(file_path): # if "savefile.txt" exists
+        loadsave_success = True # set success as true (used for check in button direction)
+        loadsave_message = Text("Save file successfully retrieved!", font_30, (0, 0, 0), screen) # creates success message
     else:
         loadsave_success = False
-        loadsave_message = Text("Save file could not be retrieved!", font_30, (0, 0, 0), screen)
+        loadsave_message = Text("Save file could not be retrieved!", font_30, (0, 0, 0), screen) # creates fail message
 
     while running:
-        screen.blit(background_image, (0,0))
+        screen.blit(background_image, (0,0)) # background
 
-        underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+        underlay = Background("center", 13, 330, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen) # gui background
 
-        newsave_text = Text("Load Save", font_50, (0, 0, 0), screen)
+        newsave_text = Text("Load Save", font_50, (0, 0, 0), screen) # gui title
 
         underlay.draw()
         newsave_text.draw(screenwidth // 2, 50, centered=True)
-        loadsave_message.draw(screenwidth // 2, 200, centered=True)
+        loadsave_message.draw(screenwidth // 2, 180, centered=True)
 
-        if loadsave_success is True:
-            levelselection = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen)
+        if loadsave_success is True: # if the file was successfully found
+            nextbutton = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen) # makes a button titled "level selection"
+        else: # if the file was not found (needs to be made through newSave)
+            nextbutton = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Create new save", font, (255, 255, 255), screen) # sets the nextbutton as "create new save"
+        nextbutton.draw()
 
-
-
-        if levelselection.is_clicked():
-            selectionMenu()
+        if nextbutton.is_clicked(): # when the nextbutton is clicked on
+            if(loadsave_success is True): # if the file exists
+                selectionMenu() # takes the user to the selection menu
+            else:
+                newSave() # takes the user to the new save menu (save file will be generated through here)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -231,10 +235,11 @@ def loadSave():
 # called when the "New Save" button is clicked
 def newSave():
     running = True
-    savefile = open ("savefile.txt", "w") # creates the file 'savefile.txt' in write mode
-    savefile.write("1") # first level
-    savefile.close()
     while running:
+        savefile = open ("savefile.txt", "w") # creates the file 'savefile.txt' in write mode
+        savefile.write("1") # first level
+        savefile.close()
+
         screen.blit(background_image, (0,0))
 
         underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
