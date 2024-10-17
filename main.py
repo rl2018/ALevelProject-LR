@@ -1,14 +1,16 @@
 import pygame
 import sys
+import os # for checking if save file exists
 
-# Setting up an environment to initialize pygame
+# Setting up an environment to initialise pygame
 mainClock = pygame.time.Clock()
 from pygame.locals import *
 pygame.init()
-pygame.display.set_caption('DriveRightUK')
-screenwidth = 720
-screenheight = 405
+pygame.display.set_caption('DriveRightUK') # set the window name
+screenwidth = 720 # width of the screen
+screenheight = 405 # height of the screen
 screen = pygame.display.set_mode((screenwidth, screenheight), 0, 32)
+current_directory = os.path.dirname(os.path.abspath(__file__)) # gets the directory of the game
 
 # Load background image
 background_image = pygame.image.load('background.jpg')
@@ -180,6 +182,51 @@ def game():
 
         pygame.display.update()
         mainClock.tick(60)
+
+# called when the "Load Save" button is clicked
+def loadSave():
+    running = True
+    filename="savefile.txt"
+    file_path=os.path.join(current_directory, filename) # set the full path to the file
+    
+    # check if the file exists
+    if os.path.exists(file_path):
+        loadsave_success = True
+        loadsave_message = Text("Save file successfully retrieved!", font_30, (0, 0, 0), screen)
+    else:
+        loadsave_success = False
+        loadsave_message = Text("Save file could not be retrieved!", font_30, (0, 0, 0), screen)
+
+    while running:
+        screen.blit(background_image, (0,0))
+
+        underlay = Background("center", 13, 300, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+        newsave_text = Text("Load Save", font_50, (0, 0, 0), screen)
+
+        underlay.draw()
+        newsave_text.draw(screenwidth // 2, 50, centered=True)
+        loadsave_message.draw(screenwidth // 2, 200, centered=True)
+
+        if loadsave_success is True:
+            levelselection = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen)
+
+
+
+        if levelselection.is_clicked():
+            selectionMenu()
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+
+        pygame.display.update()
+        mainClock.tick(60)
+
 
 # called when the "New Save" button is clicked
 def newSave():
@@ -378,26 +425,88 @@ def selectionMenu():
     while running:
         screen.blit(background_image, (0,0))
 
+        placeholderimg = pygame.image.load('levelplaceholder.png')
+
         underlay = Background("center", 13, 700, 380, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
 
-        levelselection_text = Text("Level Selection", font_50, (0, 0, 0), screen)
+        levelselection_text = Text("Level Selection", font_30, (0, 0, 0), screen)
 
-        level0_img = Button(35, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+        level0_img = Button(35, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
         level0_text = Text("Tutorial level", font_20, (0, 0, 0), screen)
 
-        level1_img = Button(205, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
-        level2_img = Button(375, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
-        level3_img = Button(545, 80, 140, 80, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+        level1_img = Button(205, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level1_text = Text("Level 1", font_20, (0, 0, 0), screen)
+
+        level2_img = Button(375, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level2_text = Text("Level 2", font_20, (0, 0, 0), screen)
+            
+        level3_img = Button(545, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level3_text = Text("Level 3", font_20, (0, 0, 0), screen)
+
+        level4_img = Button(35, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level4_text = Text("Level 4", font_20, (0, 0, 0), screen)
+
+        level5_img = Button(205, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level5_text = Text("Level 5", font_20, (0, 0, 0), screen)
+
+        level6_img = Button(375, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level6_text = Text("Level 6", font_20, (0, 0, 0), screen)
+            
+        level7_img = Button(545, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level7_text = Text("Level 7", font_20, (0, 0, 0), screen)
+
+        level8_img = Button(35, 280, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level8_text = Text("Level 8", font_20, (0, 0, 0), screen)
+
+        level9_img = Button(205, 280, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level9_text = Text("Level 9", font_20, (0, 0, 0), screen)
+
+        level10_img = Button(375, 280, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level10_text = Text("Level 10", font_20, (0, 0, 0), screen)
+            
+        level11_img = Button(545, 280, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level11_text = Text("Level 11", font_20, (0, 0, 0), screen)
 
         underlay.draw()
-        levelselection_text.draw(160, 50, centered=True)
+        levelselection_text.draw(110, 40, centered=True)
 
         level0_img.draw()
-        level0_text.draw(35, 165)
+        level0_text.draw(35, 145)
 
         level1_img.draw()
+        level1_text.draw(205, 145)
+
         level2_img.draw()
+        level2_text.draw(375, 145)
+
         level3_img.draw()
+        level3_text.draw(545, 145)
+
+        level4_img.draw()
+        level4_text.draw(35, 255)
+
+        level5_img.draw()
+        level5_text.draw(205, 255)
+
+        level6_img.draw()
+        level6_text.draw(375, 255)
+
+        level7_img.draw()
+        level7_text.draw(545, 255)
+
+        level8_img.draw()
+        level8_text.draw(35, 365)
+
+        level9_img.draw()
+        level9_text.draw(205, 365)
+
+        level10_img.draw()
+        level10_text.draw(375, 365)
+
+        level11_img.draw()
+        level11_text.draw(545, 365)
+
+
         
         for event in pygame.event.get():
             if event.type == QUIT:
