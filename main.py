@@ -89,8 +89,9 @@ class Button:
     def is_clicked(self):
         mx, my = pygame.mouse.get_pos()
         if self.rect.collidepoint((mx, my)):
-            if pygame.mouse.get_pressed()[0]:
-                return True
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Detect when the left mouse button is pressed
+                    return True
         return False
 
 # Class used to create "underlays" behind the main content
@@ -215,10 +216,10 @@ def loadSave():
         nextbutton.draw()
 
         if nextbutton.is_clicked(): # when the nextbutton is clicked on
+            if(loadsave_success is False):
+                newSave() # takes the user to the new save menu (save file will be generated through here)
             if(loadsave_success is True): # if the file exists
                 selectionMenu() # takes the user to the selection menu
-            else:
-                newSave() # takes the user to the new save menu (save file will be generated through here)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -249,16 +250,16 @@ def newSave():
         newsave_success1 = Text("New save file has been", font_30, (0, 0, 0), screen)
         newsave_success2 = Text("successfully created", font_30, (0, 0, 0), screen)
 
-        levelselection = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen)
+        mainmenu = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Back to menu", font, (255, 255, 255), screen)
 
         underlay.draw()
         newsave_text.draw(screenwidth // 2, 50, centered=True)
         newsave_success1.draw(screenwidth // 2, 170, centered=True)
         newsave_success2.draw(screenwidth // 2, 190, centered=True)
-        levelselection.draw()
+        mainmenu.draw()
         
-        if levelselection.is_clicked():
-            selectionMenu()
+        if mainmenu.is_clicked():
+            main_menu() # takes the user to the main menu
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -511,7 +512,8 @@ def selectionMenu():
         level11_img.draw()
         level11_text.draw(545, 365)
 
-
+        if level0_img.is_clicked():
+            game()
         
         for event in pygame.event.get():
             if event.type == QUIT:
