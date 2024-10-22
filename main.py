@@ -89,9 +89,8 @@ class Button:
     def is_clicked(self):
         mx, my = pygame.mouse.get_pos()
         if self.rect.collidepoint((mx, my)):
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Detect when the left mouse button is pressed
-                    return True
+            if pygame.mouse.get_pressed()[0]:
+                return True
         return False
 
 # Class used to create "underlays" behind the main content
@@ -122,8 +121,61 @@ class Background:
         # Blit the background surface onto the main surface
         self.surface.blit(self.background_surface, self.rect.topleft)
 
+class Car(pygame.sprite.Sprite):
+    def __init__(self): # constructor method for the vehicle
+        super().__init__() # initialises sprite class
+        self.original_image = pygame.image.load('car.png') # gets the image for the vehicle
+        self.image = self.original_image
+        self.rect = self.image.get_rect(center = (screenwidth//2, screenheight//2)) # where the vehicle will appear initially
+        self.angle = 0 # angle at which the vehicle is rotated initially
+        self.rotation_speed = 1.8 # the speed at which the vehicle will rotate
+        self.direction = 0 # initial direction force of the vehicle
+
+    def set_rotation(self):
+        if self.direction == 1: # if direction is turning right
+            self.angle -= self.rotation_speed # decrease the angle by the rotation speed
+        if self.direction == -1: # if direction is turning left
+            self.angle += self.rotation_speed # increase the angle by the rotation speed
+
+        self.image = pygame.transform.rotozoom(self.original_image,self.angle,0.25) # rotate the image by the new angle
+        self.rect = self.image.get_rect(center = self.rect.center) # update the rect
+
+    def update(self):
+        self.set_rotation() # call set_rotation to change the rotation of the vehicle 
+        
+
+
 # A variable to check for the status later
 click = False
+
+# called when level is selected through level selector
+def game():
+    running = True
+    car = pygame.sprite.GroupSingle(Car())
+    while running:
+        
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN: # when key is pressed
+                if event.key == pygame.K_RIGHT: # right button
+                    car.sprite.direction += 1 # increment direction
+                if event.key == pygame.K_LEFT: # left button
+                    car.sprite.direction -= 1 # decrement direction
+
+            if event.type == KEYUP: # when key is released
+                if event.key == K_RIGHT: # right button
+                    car.sprite.direction -= 1 # decrement direction
+                if event.key == K_LEFT: # left button
+                    car.sprite.direction += 1 # increment direction
+
+        screen.fill((222,222,222))
+        car.draw(screen)
+        car.update()
+
+        pygame.display.update()
+        mainClock.tick(60)
 
 # Main container function that holds the buttons and game functions
 def main_menu():
@@ -164,26 +216,6 @@ def main_menu():
         pygame.display.update()
         mainClock.tick(60)
 
-# This function is called when the "PLAY" button is clicked.
-def game():
-    running = True
-    while running:
-        screen.fill((0, 0, 0))
-
-        game_text = Text('GAME SCREEN', font, (255, 255, 255), screen)
-        game_text.draw(20, 20)
-        
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
-
-        pygame.display.update()
-        mainClock.tick(60)
-
 # called when the "Load Save" button is clicked
 def loadSave():
     running = True
@@ -212,14 +244,15 @@ def loadSave():
         if loadsave_success is True: # if the file was successfully found
             nextbutton = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen) # makes a button titled "level selection"
         else: # if the file was not found (needs to be made through newSave)
+
             nextbutton = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Create new save", font, (255, 255, 255), screen) # sets the nextbutton as "create new save"
         nextbutton.draw()
 
         if nextbutton.is_clicked(): # when the nextbutton is clicked on
-            if(loadsave_success is False):
-                newSave() # takes the user to the new save menu (save file will be generated through here)
             if(loadsave_success is True): # if the file exists
                 selectionMenu() # takes the user to the selection menu
+            else:
+                newSave() # takes the user to the new save menu (save file will be generated through here)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -250,16 +283,16 @@ def newSave():
         newsave_success1 = Text("New save file has been", font_30, (0, 0, 0), screen)
         newsave_success2 = Text("successfully created", font_30, (0, 0, 0), screen)
 
-        mainmenu = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Back to menu", font, (255, 255, 255), screen)
+        levelselection = Button("center", 220, 270, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Level selection", font, (255, 255, 255), screen)
 
         underlay.draw()
         newsave_text.draw(screenwidth // 2, 50, centered=True)
         newsave_success1.draw(screenwidth // 2, 170, centered=True)
         newsave_success2.draw(screenwidth // 2, 190, centered=True)
-        mainmenu.draw()
+        levelselection.draw()
         
-        if mainmenu.is_clicked():
-            main_menu() # takes the user to the main menu
+        if levelselection.is_clicked():
+            selectionMenu()
 
         for event in pygame.event.get():
             if event.type == QUIT:
