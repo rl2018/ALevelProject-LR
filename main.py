@@ -140,8 +140,20 @@ class Car(pygame.sprite.Sprite):
         self.image = pygame.transform.rotozoom(self.original_image,self.angle,0.25) # rotate the image by the new angle
         self.rect = self.image.get_rect(center = self.rect.center) # update the rect
 
+    def get_rotation(self):
+        if self.rotation == 1:
+            self.forward.rotate_ip(self.rotation_speed)
+        if self.rotation == -1:
+            self.forward.rotate_ip(-self.rotation_speed)
+
+    def accelerate(self):
+        if self.active:
+            self.rect.center += self.forward
+
     def update(self):
-        self.set_rotation() # call set_rotation to change the rotation of the vehicle 
+        self.set_rotation() # call set_rotation to change the rotation of the vehicle
+        self.get_rotation()
+        self.accelerate()
         
 
 
@@ -163,12 +175,16 @@ def game():
                     car.sprite.direction += 1 # increment direction
                 if event.key == pygame.K_LEFT: # left button
                     car.sprite.direction -= 1 # decrement direction
+                if event.key == pygame.K_SPACE:
+                    car.sprite.active = True
 
             if event.type == KEYUP: # when key is released
                 if event.key == K_RIGHT: # right button
                     car.sprite.direction -= 1 # decrement direction
                 if event.key == K_LEFT: # left button
                     car.sprite.direction += 1 # increment direction
+                if event.key == pygame.K_SPACE:
+                    car.sprite.active = False
 
         screen.fill((222,222,222))
         car.draw(screen)
