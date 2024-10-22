@@ -122,40 +122,47 @@ class Background:
         self.surface.blit(self.background_surface, self.rect.topleft)
 
 class Car(pygame.sprite.Sprite):
-    def __init__(self): # constructor method for the vehicle
-        super().__init__() # initialises sprite class
-        self.original_image = pygame.image.load('car.png') # gets the image for the vehicle
+    def __init__(self):  # constructor method for the vehicle
+        super().__init__()  # initializes sprite class
+        self.original_image = pygame.image.load('car.png')  # gets the image for the vehicle
         self.image = self.original_image
-        self.rect = self.image.get_rect(center = (screenwidth//2, screenheight//2)) # where the vehicle will appear initially
-        self.angle = 0 # angle at which the vehicle is rotated initially
-        self.rotation_speed = 1.8 # the speed at which the vehicle will rotate
-        self.direction = 0 # initial direction force of the vehicle
-        self.forward = pygame.math.Vector2(0,-1)
-        self.active = False
+        self.rect = self.image.get_rect(center=(screenwidth // 2, screenheight // 2))  # where the vehicle will appear initially
+        self.angle = 0  # angle at which the vehicle is rotated initially
+        self.rotation_speed = 1.8  # the speed at which the vehicle will rotate
+        self.direction = 0  # initial direction force of the vehicle
+        self.forward = pygame.math.Vector2(0, -1)
+        self.active_forward = False  # controls if the car is accelerating forward
+        self.active_reverse = False  # controls if the car is reversing
+        self.reverse_speed = -1  # speed for reverse
+        self.forward_speed = 3  # speed for forward movement
 
     def set_rotation(self):
-        if self.direction == 1: # if direction is turning right
-            self.angle -= self.rotation_speed # decrease the angle by the rotation speed
-        if self.direction == -1: # if direction is turning left
-            self.angle += self.rotation_speed # increase the angle by the rotation speed
+        if self.active_forward or self.active_reverse:  # Only rotate if car is moving
+            if self.direction == 1:  # if direction is turning right
+                self.angle -= self.rotation_speed  # decrease the angle by the rotation speed
+            if self.direction == -1:  # if direction is turning left
+                self.angle += self.rotation_speed  # increase the angle by the rotation speed
 
-        self.image = pygame.transform.rotozoom(self.original_image,self.angle,0.25) # rotate the image by the new angle
-        self.rect = self.image.get_rect(center = self.rect.center) # update the rect
+            self.image = pygame.transform.rotozoom(self.original_image, self.angle, 0.25)  # rotate the image by the new angle
+            self.rect = self.image.get_rect(center=self.rect.center)  # update the rect
 
     def get_rotation(self):
-        if self.direction == 1:
-            self.forward.rotate_ip(self.rotation_speed)
-        if self.direction == -1:
-            self.forward.rotate_ip(-self.rotation_speed)
+        if self.active_forward or self.active_reverse:  # Only adjust forward vector if car is moving
+            if self.direction == 1:
+                self.forward.rotate_ip(self.rotation_speed)
+            if self.direction == -1:
+                self.forward.rotate_ip(-self.rotation_speed)
 
     def accelerate(self):
-        if self.active:
-            self.rect.center += self.forward * 5
+        if self.active_forward:  # Forward movement
+            self.rect.center += self.forward * self.forward_speed
+        elif self.active_reverse:  # Reverse movement
+            self.rect.center += self.forward * self.reverse_speed
 
     def update(self):
-        self.set_rotation() # call set_rotation to change the rotation of the vehicle
+        self.set_rotation()  # call set_rotation to change the rotation of the vehicle
         self.get_rotation()
-        self.accelerate()
+        self.accelerate()  # apply the movement depending on the state
 
 # A variable to check for the status later
 click = False
@@ -170,23 +177,27 @@ def game():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == KEYDOWN: # when key is pressed
-                if event.key == pygame.K_RIGHT: # right button
-                    car.sprite.direction += 1 # increment direction
-                if event.key == pygame.K_LEFT: # left button
-                    car.sprite.direction -= 1 # decrement direction
-                if event.key == pygame.K_UP:
-                    car.sprite.active = True
+            if event.type == KEYDOWN:  # when key is pressed
+                if event.key == pygame.K_RIGHT:  # right button
+                    car.sprite.direction += 1  # increment direction
+                if event.key == pygame.K_LEFT:  # left button
+                    car.sprite.direction -= 1  # decrement direction
+                if event.key == pygame.K_UP:  # accelerate forward
+                    car.sprite.active_forward = True
+                if event.key == pygame.K_DOWN:  # reverse
+                    car.sprite.active_reverse = True
 
-            if event.type == KEYUP: # when key is released
-                if event.key == K_RIGHT: # right button
-                    car.sprite.direction -= 1 # decrement direction
-                if event.key == K_LEFT: # left button
-                    car.sprite.direction += 1 # increment direction
-                if event.key == pygame.K_UP:
-                    car.sprite.active = False
+            if event.type == KEYUP:  # when key is released
+                if event.key == pygame.K_RIGHT:  # right button
+                    car.sprite.direction -= 1  # decrement direction
+                if event.key == pygame.K_LEFT:  # left button
+                    car.sprite.direction += 1  # increment direction
+                if event.key == pygame.K_UP:  # stop accelerating forward
+                    car.sprite.active_forward = False
+                if event.key == pygame.K_DOWN:  # stop reversing
+                    car.sprite.active_reverse = False
 
-        screen.fill((222,222,222))
+        screen.fill((222, 222, 222))
         car.draw(screen)
         car.update()
 
