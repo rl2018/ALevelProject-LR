@@ -125,7 +125,7 @@ class Car(pygame.sprite.Sprite):
     def __init__(self):  # constructor method for the vehicle
         super().__init__()  # initializes sprite class
         self.original_image = pygame.image.load('car.png')  # gets the image for the vehicle
-        self.image = pygame.transform.rotozoom(self.original_image, 0, 0.25)  # scale the image down initially
+        self.image = pygame.transform.rotozoom(self.original_image, 0, 0.1)  # scale the image down initially
         self.rect = self.image.get_rect(center=(screenwidth // 2, screenheight // 2))  # where the vehicle will appear initially
         self.angle = 0  # angle at which the vehicle is rotated initially
         self.rotation_speed = 1.8  # the speed at which the vehicle will rotate
@@ -143,8 +143,8 @@ class Car(pygame.sprite.Sprite):
             if self.direction == -1:  # if direction is turning left
                 self.angle += self.rotation_speed  # increase the angle by the rotation speed
 
-            # Rotate the image and scale it down by 0.25
-            self.image = pygame.transform.rotozoom(self.original_image, self.angle, 0.25)
+            # Rotate the image and scale it down
+            self.image = pygame.transform.rotozoom(self.original_image, self.angle, 0.1)
             self.rect = self.image.get_rect(center=self.rect.center)  # update the rect
 
     def get_rotation(self):
