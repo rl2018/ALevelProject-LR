@@ -130,6 +130,8 @@ class Car(pygame.sprite.Sprite):
         self.angle = 0 # angle at which the vehicle is rotated initially
         self.rotation_speed = 1.8 # the speed at which the vehicle will rotate
         self.direction = 0 # initial direction force of the vehicle
+        self.forward = pygame.math.Vector2(0,-1)
+        self.active = False
 
     def set_rotation(self):
         if self.direction == 1: # if direction is turning right
@@ -141,21 +143,19 @@ class Car(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = self.rect.center) # update the rect
 
     def get_rotation(self):
-        if self.rotation == 1:
+        if self.direction == 1:
             self.forward.rotate_ip(self.rotation_speed)
-        if self.rotation == -1:
+        if self.direction == -1:
             self.forward.rotate_ip(-self.rotation_speed)
 
     def accelerate(self):
         if self.active:
-            self.rect.center += self.forward
+            self.rect.center += self.forward * 5
 
     def update(self):
         self.set_rotation() # call set_rotation to change the rotation of the vehicle
         self.get_rotation()
         self.accelerate()
-        
-
 
 # A variable to check for the status later
 click = False
@@ -175,7 +175,7 @@ def game():
                     car.sprite.direction += 1 # increment direction
                 if event.key == pygame.K_LEFT: # left button
                     car.sprite.direction -= 1 # decrement direction
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_UP:
                     car.sprite.active = True
 
             if event.type == KEYUP: # when key is released
@@ -183,7 +183,7 @@ def game():
                     car.sprite.direction -= 1 # decrement direction
                 if event.key == K_LEFT: # left button
                     car.sprite.direction += 1 # increment direction
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_UP:
                     car.sprite.active = False
 
         screen.fill((222,222,222))
