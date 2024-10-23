@@ -169,12 +169,18 @@ class Car(pygame.sprite.Sprite):
 click = False
 
 # called when level is selected through level selector
-def game():
+def game(level):
     running = True
     car = pygame.sprite.GroupSingle(Car()) # creates the group for the cars, with the sprite in the group
-    levelmap = pygame.image.load('levels/0.png') # import the map image
+    map_filename = (str(level)+".png")
+    if level==0:
+        levelname = "Tutorial" # level 0 is the tutorial
+    else:
+        levelname = "Level",level
+    levelmap = pygame.image.load('levels/'+map_filename) # import the map image
 
-    settings_button = Button(670, 10, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+    settings_button = Button(670, 10, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image) # settings button displayed in the top right
+    level_display = Button(0, 0, 110, 30,  (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, levelname, font, (255, 255, 255), screen) # shows the level in the top left
 
     while running:
         
@@ -197,15 +203,19 @@ def game():
                     car.sprite.direction -= 1  # decrement direction
                 if event.key == pygame.K_LEFT:  # left button
                     car.sprite.direction += 1  # increment direction
-                if event.key == pygame.K_UP:  # stop accelerating forward
+                if event.key == pygame.K_UP:  # stop accelerating forwardd
                     car.sprite.active_forward = False
                 if event.key == pygame.K_DOWN:  # stop reversing
                     car.sprite.active_reverse = False
 
         screen.blit(levelmap, (0,0)) # copy the image onto the screen
         settings_button.draw()
+        level_display.draw()
         car.draw(screen)
         car.update()
+        
+        if settings_button.is_clicked():
+            settings()
 
         pygame.display.update()
         mainClock.tick(60)
@@ -579,7 +589,7 @@ def selectionMenu():
         level11_text.draw(545, 365)
 
         if level0_img.is_clicked():
-            game()
+            game(0)
         
         for event in pygame.event.get():
             if event.type == QUIT:
