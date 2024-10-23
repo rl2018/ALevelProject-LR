@@ -126,7 +126,7 @@ class Car(pygame.sprite.Sprite):
         super().__init__()  # initializes sprite class
         self.original_image = pygame.image.load('car.png')  # gets the image for the vehicle
         self.image = pygame.transform.rotozoom(self.original_image, 0, 0.1)  # scale the image down initially
-        self.rect = self.image.get_rect(center=(screenwidth // 2, screenheight // 2))  # where the vehicle will appear initially
+        self.rect = self.image.get_rect(center=(390, 370))  # where the vehicle will appear initially
         self.angle = 0  # angle at which the vehicle is rotated initially
         self.rotation_speed = 1.8  # the speed at which the vehicle will rotate
         self.direction = 0  # initial direction force of the vehicle
@@ -171,7 +171,11 @@ click = False
 # called when level is selected through level selector
 def game():
     running = True
-    car = pygame.sprite.GroupSingle(Car())
+    car = pygame.sprite.GroupSingle(Car()) # creates the group for the cars, with the sprite in the group
+    levelmap = pygame.image.load('levels/0.png') # import the map image
+
+    settings_button = Button(670, 10, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image)
+
     while running:
         
         for event in pygame.event.get():
@@ -198,7 +202,8 @@ def game():
                 if event.key == pygame.K_DOWN:  # stop reversing
                     car.sprite.active_reverse = False
 
-        screen.fill((222, 222, 222))
+        screen.blit(levelmap, (0,0)) # copy the image onto the screen
+        settings_button.draw()
         car.draw(screen)
         car.update()
 
