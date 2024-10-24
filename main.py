@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os # for checking if save file exists
+import time
 
 # Setting up an environment to initialise pygame
 mainClock = pygame.time.Clock()
@@ -180,7 +181,9 @@ def game(level):
     levelmap = pygame.image.load('levels/'+map_filename) # import the map image
 
     settings_button = Button(670, 10, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image) # settings button displayed in the top right
-    level_display = Button(0, 0, 110, 30,  (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, levelname, font, (255, 255, 255), screen) # shows the level in the top left
+    level_display = Button(0, 30, 110, 30,  (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, levelname, font, (255, 255, 255), screen) # shows the level in the top left
+
+    start_time = time.time()
 
     while running:
         
@@ -208,9 +211,19 @@ def game(level):
                 if event.key == pygame.K_DOWN:  # stop reversing
                     car.sprite.active_reverse = False
 
+        # Calculate the elapsed time
+        elapsed_time = time.time() - start_time
+        minutes = int(elapsed_time // 60)  # Get the minutes
+        seconds = int(elapsed_time % 60)  # Get the seconds
+        timer_display = f"{minutes}:{seconds:02d}"  # Format the time as "0:00"
+
         screen.blit(levelmap, (0,0)) # copy the image onto the screen
         settings_button.draw()
         level_display.draw()
+        
+        timer_button = Button(0, 0, 110, 30, (128, 128, 128), (128, 128, 128), (100, 100, 100), 2, timer_display, font, (255, 255, 255), screen)
+        timer_button.draw()
+        
         car.draw(screen)
         car.update()
         
