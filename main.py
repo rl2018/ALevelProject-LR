@@ -213,9 +213,9 @@ def game(level):
 
         # Calculate the elapsed time
         elapsed_time = time.time() - start_time
-        minutes = int(elapsed_time // 60)  # Get the minutes
-        seconds = int(elapsed_time % 60)  # Get the seconds
-        timer_display = f"{minutes}:{seconds:02d}"  # Format the time as "0:00"
+        minutes = int(elapsed_time // 60)  # get the minutes
+        seconds = int(elapsed_time % 60)  # get the seconds
+        timer_display = f"{minutes}:{seconds:02d}"  # format the time as "0:00"
 
         screen.blit(levelmap, (0,0)) # copy the image onto the screen
         settings_button.draw()
@@ -226,9 +226,62 @@ def game(level):
         
         car.draw(screen)
         car.update()
-        
+
+        # Check if the car is on the road
+        car_position = car.sprite.rect.center  # get the car's position
+        pixel_color = levelmap.get_at(car_position)[:3]  # Get the RGB value at the car's position
+
+        if not isOnAllowedColor(pixel_color): # check if pixel colour underneath is not accepted road colour
+            levelFail(level)  # show level fail screen
+
         if settings_button.is_clicked():
             settings()
+
+        pygame.display.update()
+        mainClock.tick(60)
+
+def isOnAllowedColor(color):
+    # tolerance range for colors
+    road_color = (118, 114, 107)
+    white_line_color = (254, 254, 254)
+    tolerance = 10
+
+    # check if colour is within the tolerance range for colours expected on road
+    road_check = all(abs(color[i] - road_color[i]) <= tolerance for i in range(3))
+    white_line_check = all(abs(color[i] - white_line_color[i]) <= tolerance for i in range(3))
+    return road_check or white_line_check
+
+def levelFail(current_level):
+    # freeze the current game screen by taking a snapshot of the screen
+    background = screen.copy()
+
+    # underlay
+    underlay = Background("center", 90, 330, 230, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+    # define text
+    fail_text = Text("Level failed!", font_40, (0, 0, 0), screen)
+    
+    # define buttons for retry and exit
+    retry_button = Button("center", 180, 200, 50, (200, 0, 0), (255, 0, 0), (150, 0, 0), 2, "Retry", font, (255, 255, 255), screen)
+    exit_button = Button("center", 240, 200, 50, (200, 0, 0), (255, 0, 0), (150, 0, 0), 2, "Exit", font, (255, 255, 255), screen)
+
+    while True:
+        # draw the background, buttons, text
+        screen.blit(background, (0, 0)) # display background
+        underlay.draw()
+        fail_text.draw(screenwidth // 2, 130, centered=True)
+        retry_button.draw()
+        exit_button.draw()
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if retry_button.is_clicked():
+                    game(current_level)  # restart the game at the current level
+                elif exit_button.is_clicked():
+                    main_menu()  # return to main menu
 
         pygame.display.update()
         mainClock.tick(60)
@@ -512,7 +565,7 @@ def muteSound():
     running = True
 
 def quitLevel():
-    running = True
+    main_menu()
 
 
 def selectionMenu():
