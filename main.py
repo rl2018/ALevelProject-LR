@@ -92,9 +92,6 @@ class Button:
         if self.rect.collidepoint((mx, my)):
             if pygame.mouse.get_pressed()[0]:
                 return True
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Detect when the left mouse button is pressed
-                    return True
         return False
 
 # Class used to create "underlays" behind the main content
@@ -238,7 +235,7 @@ def game(level):
             levelFail(level)  # show level fail screen
 
         if settings_button.is_clicked():
-            settings()
+            settings(ingame=True)
 
         pygame.display.update()
         mainClock.tick(60)
@@ -276,15 +273,16 @@ def levelFail(current_level):
         retry_button.draw()
         exit_button.draw()
 
+        if retry_button.is_clicked():
+            game(current_level)  # restart the game at the current level
+        elif exit_button.is_clicked():
+            main_menu()  # return to main menu
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == MOUSEBUTTONDOWN:
-                if retry_button.is_clicked():
-                    game(current_level)  # restart the game at the current level
-                elif exit_button.is_clicked():
-                    main_menu()  # return to main menu
+
 
         pygame.display.update()
         mainClock.tick(60)
@@ -435,6 +433,8 @@ def settings(ingame=False):
         credits_button = Button("center", 220, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Credits", font, (255, 255, 255), screen)
         if ingame: # checks if the user has clicked the settings button from ingame
             quit_button = Button("center", 280, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Quit Level", font, (255, 255, 255), screen)
+        else:
+            quit_button = Button("center", 280, 250, 45, (100, 100, 100), (100, 100, 100), (100, 100, 100), 2, "Quit Level", font, (255, 255, 255), screen)
 
         # Show buttons, underlay on screen
         underlay.draw()
@@ -450,8 +450,9 @@ def settings(ingame=False):
             muteSound()
         if credits_button.is_clicked():
             credits()
-        if quit_button.is_clicked():
-            quitLevel()
+        if ingame:
+            if quit_button.is_clicked():
+                quitLevel()
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -569,7 +570,7 @@ def muteSound():
     running = True
 
 def quitLevel():
-    running = True
+    main_menu()
 
 
 def selectionMenu():
