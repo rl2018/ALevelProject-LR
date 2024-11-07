@@ -92,6 +92,9 @@ class Button:
         if self.rect.collidepoint((mx, my)):
             if pygame.mouse.get_pressed()[0]:
                 return True
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Detect when the left mouse button is pressed
+                    return True
         return False
 
 # Class used to create "underlays" behind the main content
@@ -415,7 +418,7 @@ def newSave():
         mainClock.tick(60)
 
 # This function is called when the "SETTINGS" button is clicked
-def settings():
+def settings(ingame=False):
     running = True
     while running:
         screen.blit(background_image, (0,0)) # sets the background image
@@ -430,7 +433,8 @@ def settings():
         howtoplay_button = Button("center", 100, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "How to Play", font, (255, 255, 255), screen)
         mute_button = Button("center", 160, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Mute Sound", font, (255, 255, 255), screen)
         credits_button = Button("center", 220, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Credits", font, (255, 255, 255), screen)
-        quit_button = Button("center", 280, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Quit Level", font, (255, 255, 255), screen)
+        if ingame: # checks if the user has clicked the settings button from ingame
+            quit_button = Button("center", 280, 250, 45, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "Quit Level", font, (255, 255, 255), screen)
 
         # Show buttons, underlay on screen
         underlay.draw()
@@ -565,7 +569,7 @@ def muteSound():
     running = True
 
 def quitLevel():
-    main_menu()
+    running = True
 
 
 def selectionMenu():
