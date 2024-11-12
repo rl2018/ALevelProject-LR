@@ -231,8 +231,11 @@ def game(level):
         car_position = car.sprite.rect.center  # get the car's position
         pixel_color = levelmap.get_at(car_position)[:3]  # Get the RGB value at the car's position
 
-        if not isOnAllowedColor(pixel_color): # check if pixel colour underneath is not accepted road colour
-            levelFail(level)  # show level fail screen
+        if pixel_color in [(0,255,0)]:
+            levelPass() # passed the level, placeholder
+        else:
+            if not isOnAllowedColor(pixel_color): # check if pixel colour underneath is not accepted road colour
+                levelFail(level)  # show level fail screen
 
         if settings_button.is_clicked():
             settings(ingame=True)
