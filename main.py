@@ -290,6 +290,38 @@ def levelFail(current_level):
         pygame.display.update()
         mainClock.tick(60)
 
+def levelPass():
+    # freeze the current game screen by taking a snapshot of the screen
+    background = screen.copy()
+
+    # underlay
+    underlay = Background("center", 90, 330, 230, (255, 255, 255, 150), (0, 0, 0), 10, 180, screen)
+
+    # define text
+    pass_text = Text("Level passed!", font_40, (0, 0, 0), screen)
+    
+    # define button for levels selection
+    levels_button = Button("center", 180, 200, 50, (108, 179, 89), (68, 143, 48), (68, 143, 48), 2, "Back to Levels", font, (255, 255, 255), screen)
+
+    while True:
+        # draw the background, buttons, text
+        screen.blit(background, (0, 0)) # display background
+        underlay.draw()
+        pass_text.draw(screenwidth // 2, 130, centered=True)
+        levels_button.draw()
+
+        if levels_button.is_clicked():
+            selectionMenu()  # go to selection menu
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+
+        pygame.display.update()
+        mainClock.tick(60)
+
 # Main container function that holds the buttons and game functions
 def main_menu():
     global click
