@@ -123,11 +123,11 @@ class Background:
         self.surface.blit(self.background_surface, self.rect.topleft)
 
 class Car(pygame.sprite.Sprite):
-    def __init__(self):  # constructor method for the vehicle
+    def __init__(self, x, y):  # constructor method for the vehicle
         super().__init__()  # initializes sprite class
         self.original_image = pygame.image.load('car.png')  # gets the image for the vehicle
         self.image = pygame.transform.rotozoom(self.original_image, 0, 0.1)  # scale the image down initially
-        self.rect = self.image.get_rect(center=(390, 370))  # where the vehicle will appear initially
+        self.rect = self.image.get_rect(center=(x, y))  # where the vehicle will appear initially
         self.angle = 0  # angle at which the vehicle is rotated initially
         self.rotation_speed = 1.8  # the speed at which the vehicle will rotate
         self.direction = 0  # initial direction force of the vehicle
@@ -172,12 +172,17 @@ click = False
 # called when level is selected through level selector
 def game(level):
     running = True
-    car = pygame.sprite.GroupSingle(Car()) # creates the group for the cars, with the sprite in the group
+
+    # coordinates for spawning vehicles in each level, 1st index corresponds to level number, 2nd index used to access either x or y
+    spawn_coords = [[330, 370], [100, 370]]
+
+    car = pygame.sprite.GroupSingle(Car(spawn_coords[level][0], spawn_coords[level][1])) # creates the group for the cars, with the sprite in the group
+
     map_filename = (str(level)+".png")
     if level==0:
         levelname = "Tutorial" # level 0 is the tutorial
     else:
-        levelname = "Level",level
+        levelname = "Level "+str(level)
     levelmap = pygame.image.load('levels/'+map_filename) # import the map image
 
     settings_button = Button(670, 10, 40, 40, (128, 128, 128), (100, 100, 100), (100, 100, 100), 2, "", font, (255, 255, 255), screen, cog_image) # settings button displayed in the top right
@@ -619,10 +624,12 @@ def selectionMenu():
 
         levelselection_text = Text("Level Selection", font_30, (0, 0, 0), screen)
 
-        level0_img = Button(35, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level0_thumbnail = pygame.image.load('thumbnails/0.png')
+        level0_img = Button(35, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level0_thumbnail)
         level0_text = Text("Tutorial level", font_20, (0, 0, 0), screen)
 
-        level1_img = Button(205, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level1_thumbnail = pygame.image.load('thumbnails/1.png')
+        level1_img = Button(205, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level1_thumbnail)
         level1_text = Text("Level 1", font_20, (0, 0, 0), screen)
 
         level2_img = Button(375, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
@@ -696,6 +703,8 @@ def selectionMenu():
 
         if level0_img.is_clicked():
             game(0)
+        elif level1_img.is_clicked():
+            game(1)
         
         for event in pygame.event.get():
             if event.type == QUIT:
