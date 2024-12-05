@@ -173,10 +173,39 @@ click = False
 def game(level):
     running = True
 
-    # coordinates for spawning vehicles in each level, 1st index corresponds to level number, 2nd index used to access either x or y
-    spawn_coords = [[330, 370], [100, 370]]
+    # values necessary for each level, 1st index corresponds to level number
+    level_values = [
+        { # tutorial
+            'x': 330,
+            'y': 370,
+        },
+        { # level 1
+            'x': 100,
+            'y': 370,
+        },
+        { # level 2
+            'x': 100,
+            'y': 370,
+        },
+        { # level 3
+            'x': 360,
+            'y': 50,
+        },
+        { # level 4
+            'x': 345,
+            'y': 370,
+        },
+        { # level 5
+            'x': 330,
+            'y': 370
+        },
+        { #level 6
+            'x': 350,
+            'y': 370
+        }
+    ]
 
-    car = pygame.sprite.GroupSingle(Car(spawn_coords[level][0], spawn_coords[level][1])) # creates the group for the cars, with the sprite in the group
+    car = pygame.sprite.GroupSingle(Car(level_values[level]['x'], level_values[level]['y'])) # creates the group for the cars, with the sprite in the group
 
     map_filename = (str(level)+".png")
     if level==0:
@@ -615,6 +644,7 @@ def quitLevel():
 
 def selectionMenu():
     running = True
+
     while running:
         screen.blit(background_image, (0,0))
 
@@ -632,19 +662,24 @@ def selectionMenu():
         level1_img = Button(205, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level1_thumbnail)
         level1_text = Text("Level 1", font_20, (0, 0, 0), screen)
 
-        level2_img = Button(375, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level2_thumbnail = pygame.image.load('thumbnails/2.png')
+        level2_img = Button(375, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level2_thumbnail)
         level2_text = Text("Level 2", font_20, (0, 0, 0), screen)
             
-        level3_img = Button(545, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level3_thumbnail = pygame.image.load('thumbnails/3.png')
+        level3_img = Button(545, 60, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level3_thumbnail)
         level3_text = Text("Level 3", font_20, (0, 0, 0), screen)
 
-        level4_img = Button(35, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level4_thumbnail = pygame.image.load('thumbnails/4.png')
+        level4_img = Button(35, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level4_thumbnail)
         level4_text = Text("Level 4", font_20, (0, 0, 0), screen)
 
-        level5_img = Button(205, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level5_thumbnail = pygame.image.load('thumbnails/5.png')
+        level5_img = Button(205, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level5_thumbnail)
         level5_text = Text("Level 5", font_20, (0, 0, 0), screen)
 
-        level6_img = Button(375, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
+        level6_thumbnail = pygame.image.load('thumbnails/6.png')
+        level6_img = Button(375, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, level6_thumbnail)
         level6_text = Text("Level 6", font_20, (0, 0, 0), screen)
             
         level7_img = Button(545, 170, 140, 80, (255, 255, 255), (255, 255, 255), (100, 100, 100), 2, "", font, (255, 255, 255), screen, placeholderimg)
@@ -703,8 +738,18 @@ def selectionMenu():
 
         if level0_img.is_clicked():
             game(0)
-        elif level1_img.is_clicked():
+        if level1_img.is_clicked():
             game(1)
+        if level2_img.is_clicked():
+            game(2)
+        if level3_img.is_clicked():
+            game(3)
+        if level4_img.is_clicked():
+            game(4)
+        if level5_img.is_clicked():
+            game(5)
+        if level6_img.is_clicked():
+            game(6)
         
         for event in pygame.event.get():
             if event.type == QUIT:
